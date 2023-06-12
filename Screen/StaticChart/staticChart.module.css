@@ -1,4 +1,7 @@
 .chartContainer {
-    width: 99.25dvw;
-    height: 90dvh;
+    min-width: 400px;
+    min-height: 700px;
+
+    width: 100%;
+    height: 100%;
 }
