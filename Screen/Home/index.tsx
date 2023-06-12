@@ -1,6 +1,12 @@
+"use client";
+
+import StaticChart from "../StaticChart";
+
 const Home = () => {
     return (
-        <> HomePage </>
+        <>
+            <StaticChart />
+        </>
     )
 }
 
