@@ -1,7 +1,21 @@
-.chartContainer {
-    min-width: 400px;
-    min-height: 85dvh;
+.chartContainerWrapper {
+  height: calc(100dvh - 164px);
+}
 
-    width: 100%;
-    height: 100%;
+.chartContainer {
+  min-width: 400px;
+  min-height: 500px;
+
+  width: 100%;
+  height: 100%;
+}
+
+.inputLineContainer {
+  position: relative;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.inputLineContainer > div {
+  width: 25%;
 }
