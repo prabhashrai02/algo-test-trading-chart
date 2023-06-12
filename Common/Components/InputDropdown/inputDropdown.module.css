@@ -2,6 +2,7 @@
   position: relative;
   display: inline-block;
   width: 100%;
+  z-index: 10;
 }
 
 .dropdown label {
@@ -39,7 +40,6 @@
   overflow-y: auto;
   border: var(--input-border);
   background-color: #fff;
-  z-index: 10;
 }
 
 .dropdownMenu li {
