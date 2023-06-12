@@ -36,9 +36,7 @@ export const useMultipleInstruments = () => {
   const [timeFrame, setTimeFrame] = useState("1 Min");
   const [firstStock, setFirstStock] = useState<OHLCDataType[]>([]);
   const [secondStock, setSecondStock] = useState<OHLCDataType[]>([]);
-  const [formattedData, setFormattedData] = useState<CandlestickFormatData[]>(
-    []
-  );
+  const [formattedData, setFormattedData] = useState<CandlestickFormatData[]>([]);
 
   const getSelectedStock = (selectedStock: string) => {
     switch (selectedStock) {
