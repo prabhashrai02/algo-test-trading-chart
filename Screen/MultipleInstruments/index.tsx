@@ -4,14 +4,13 @@ import InputDropdown from "@/Common/Components/InputDropdown";
 import { STOCKS_LIST, TIME_FRAME } from "@/Common/constants";
 
 import styles from "./multipleInstruments.module.css";
+import StocksDropdown from "./StocksDropdown";
 
 const MultipleInstruments = () => {
   const {
     chartContainerRef,
-    selectFirstStock,
-    setSelectFirstStock,
-    selectSecondStock,
-    setSelectSecondStock,
+    selectedStocks,
+    setSelectedStocks,
     timeFrame,
     setTimeFrame,
   } = useMultipleInstruments();
@@ -19,17 +18,11 @@ const MultipleInstruments = () => {
   return (
     <div className={styles.chartContainerWrapper}>
       <div className={styles.inputLineContainer}>
-        <InputDropdown
-          label={"Choose Stock 1: "}
+        <StocksDropdown
+          label={"Select Stocks: "}
           options={STOCKS_LIST}
-          onDropdownValueChange={(value) => setSelectFirstStock(value)}
-          selectedValue={selectFirstStock}
-        />
-        <InputDropdown
-          label={"Choose Stock 2: "}
-          options={STOCKS_LIST}
-          onDropdownValueChange={(value) => setSelectSecondStock(value)}
-          selectedValue={selectSecondStock}
+          selectedValues={selectedStocks}
+          onDropdownValueChange={setSelectedStocks}
         />
         <InputDropdown
           label={"Select Time Frame: "}
