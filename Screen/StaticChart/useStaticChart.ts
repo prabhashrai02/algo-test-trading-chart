@@ -1,32 +1,12 @@
 import { useEffect, useRef } from "react";
+import { createChart, IChartApi, ISeriesApi, LineData, UTCTimestamp } from "lightweight-charts";
 
-import {
-  createChart,
-  IChartApi,
-  ISeriesApi,
-  UTCTimestamp,
-} from "lightweight-charts";
-
-import { ChartDataType, convertToOHLC } from "@/Common/convertToOhlc";
-
-import importedData from "@/Assets/BANKNIFTY2360843500CE(2023-06-01).json";
-
+import data from '@/Assets/BANKNIFTY2360843500CE(2023-06-01).json';
 
 export const useStaticChart = () => {
-
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const chartInstanceRef = useRef<IChartApi | null>(null);
-  const seriesInstanceRef = useRef<ISeriesApi<"Candlestick"> | null>(null);
-
-  const data: ChartDataType[] = importedData.map(
-    ([timestamp, ltp, totalVolume]) => [
-      String(timestamp),
-      Number(ltp),
-      Number(totalVolume),
-    ]
-  );
-
-  const ohlc1min = convertToOHLC(data, 1);
+  const seriesInstanceRef = useRef<ISeriesApi<"Line"> | null>(null);
 
   useEffect(() => {
     if (chartContainerRef.current) {
@@ -37,23 +17,16 @@ export const useStaticChart = () => {
 
       chartInstanceRef.current = chart;
 
-      const candlestickSeries = chart.addCandlestickSeries({
-        upColor: "green",
-        downColor: "red",
-        borderVisible: false,
-      });
+      const lineSeries = chart.addLineSeries();
 
-      seriesInstanceRef.current = candlestickSeries;
+      seriesInstanceRef.current = lineSeries;
 
-      const formattedData = ohlc1min.map((value) => ({
-        time: (new Date(value.time).getTime() / 1000) as UTCTimestamp,
-        open: value.open,
-        high: value.high,
-        low: value.low,
-        close: value.close,
+      const formattedData = data.map(([timestamp, value]) => ({
+        time: (new Date(timestamp).getTime() / 1000) as UTCTimestamp,
+        value: Number(value) / 1000,
       }));
 
-      candlestickSeries.setData(formattedData);
+      lineSeries.setData(formattedData);
     }
 
     return () => {
@@ -63,9 +36,9 @@ export const useStaticChart = () => {
         seriesInstanceRef.current = null;
       }
     };
-  }, []);
+  }, [data]);
 
   return {
-    chartContainerRef
-  }
-}
+    chartContainerRef,
+  };
+};
