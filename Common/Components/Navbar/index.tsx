@@ -12,10 +12,12 @@ const Navbar = (props: NavbarProps) => {
     setActiveComponent(index);
   };
 
+  const navbarIcon = `https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7BauojTckyQJPcHluc2t7b8ZgKIzxO8lQMfWZoUZFnA&ec=48665701`;
+
   return (
     <nav className={styles.navbar}>
       <div className={styles.logoContainer}>
-        <img src={''} alt="Logo" className={styles.logo} />
+        <img src={navbarIcon} alt="Logo" className={styles.logo} />
       </div>
       <ul>
         {items.map((item, index) => (
