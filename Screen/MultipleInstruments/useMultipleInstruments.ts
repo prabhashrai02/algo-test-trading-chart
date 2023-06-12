@@ -1,5 +1,4 @@
-import { useEffect, useRef } from "react";
-
+import React, { useEffect, useRef, useState } from "react";
 import {
   createChart,
   IChartApi,
@@ -7,87 +6,105 @@ import {
   UTCTimestamp,
 } from "lightweight-charts";
 
-import { ChartDataType, convertToOHLC } from "@/Common/Components/Utils/convertToOhlc";
+import {
+  ChartDataType,
+  convertToOHLC,
+  OHLCDataType,
+} from "@/Common/Components/Utils/convertToOhlc";
 
 import importedData1 from "@/Assets/BANKNIFTY2360843500CE(2023-06-01).json";
 import importedData2 from "@/Assets/BANKNIFTY2360843500PE(2023-06-01).json";
+import importedData3 from "@/Assets/BANKNIFTY2361543500CE(2023-06-01).json";
+
+import {
+  convertDataToChartType,
+  getFormattedData,
+  getTimeFrame,
+} from "./multipleInstruments.helper";
 
 export const useMultipleInstruments = () => {
-
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const chartInstanceRef = useRef<IChartApi | null>(null);
   const seriesInstanceRef = useRef<ISeriesApi<"Candlestick"> | null>(null);
 
-  const data1: ChartDataType[] = importedData1.map(
-    ([timestamp, ltp, totalVolume]) => [
-      String(timestamp),
-      Number(ltp),
-      Number(totalVolume),
-    ]
+  const [selectFirstStock, setSelectFirstStock] = useState(
+    "BANKNIFTY2360843500CE(2023-06-01)"
+  );
+  const [selectSecondStock, setSelectSecondStock] = useState(
+    "BANKNIFTY2360843500CE(2023-06-01)"
+  );
+  const [timeFrame, setTimeFrame] = useState("1 Min");
+  const [firstStock, setFirstStock] = useState<OHLCDataType[]>([]);
+  const [secondStock, setSecondStock] = useState<OHLCDataType[]>([]);
+  const [formattedData, setFormattedData] = useState<CandlestickFormatData[]>(
+    []
   );
 
-  const data2: ChartDataType[] = importedData2.map(
-    ([timestamp, ltp, totalVolume]) => [
-      String(timestamp),
-      Number(ltp),
-      Number(totalVolume),
-    ]
-  );
+  const getSelectedStock = (selectedStock: string) => {
+    switch (selectedStock) {
+      case "BANKNIFTY2360843500CE(2023-06-01)": {
+        return convertDataToChartType(importedData1);
+      }
 
-  const ohlc1minIns1 = convertToOHLC(data1, 5);
-  const ohlc1minIns2 = convertToOHLC(data2, 5);
+      case "BANKNIFTY2360843500PE(2023-06-01)": {
+        return convertDataToChartType(importedData2);
+      }
 
-  const formattedData: CandlestickFormatData[] = [];
+      case "BANKNIFTY2361543500CE(2023-06-01)": {
+        return convertDataToChartType(importedData3);
+      }
 
-  for (let index = 0; index < ohlc1minIns1.length; index++) {
-    const ins1Data = {
-      time: (new Date(ohlc1minIns1[index].time).getTime() /
-        1000) as UTCTimestamp,
-      open: ohlc1minIns1[index].open,
-      high: ohlc1minIns1[index].high,
-      low: ohlc1minIns1[index].low,
-      close: ohlc1minIns1[index].close,
-    };
+      default: {
+        return [];
+      }
+    }
+  };
 
-    const ins2Data = {
-      time: (new Date(ohlc1minIns2[index].time).getTime() /
-        1000) as UTCTimestamp,
-      open: ohlc1minIns2[index].open,
-      high: ohlc1minIns2[index].high,
-      low: ohlc1minIns2[index].low,
-      close: ohlc1minIns2[index].close,
-    };    
+  useEffect(() => {
+    setFirstStock(
+      convertToOHLC(getSelectedStock(selectFirstStock), getTimeFrame(timeFrame))
+    );
+    setSecondStock(
+      convertToOHLC(getSelectedStock(selectSecondStock), getTimeFrame(timeFrame))
+    );
+  }, [timeFrame, selectFirstStock, selectSecondStock]);
 
-    formattedData.push({
-      time: ins1Data.time,
-      open: ins1Data.open + ins2Data.open,
-      high: ins1Data.high + ins2Data.high,
-      low: ins1Data.low + ins2Data.low,
-      close: ins1Data.close + ins2Data.close,
-    });
-
-  }
+  useEffect(() => {
+    setFormattedData(getFormattedData(firstStock, secondStock));
+  }, [firstStock, secondStock]);
 
   let prevData: CandlestickFormatData = formattedData.slice(-1)[0];
   let currentIndex = 0;
+  let intervalId: string | number | NodeJS.Timeout | undefined;
+
+  const clearChart = () => {
+    if (seriesInstanceRef.current) {
+      seriesInstanceRef.current.setData([]);
+    }
+
+    if (chartInstanceRef.current) {
+      chartInstanceRef.current.remove();
+      chartInstanceRef.current = null;
+    }
+  };
 
   useEffect(() => {
-    if (chartContainerRef.current) {
-      if (chartInstanceRef.current === null) {
-        const chart = createChart(chartContainerRef.current, {
-          rightPriceScale: { visible: true },
-          timeScale: { timeVisible: true, secondsVisible: true },
-        });
-        chartInstanceRef.current = chart;
+    clearChart();
 
-        const candlestickSeries = chart.addCandlestickSeries({
-          upColor: "green",
-          downColor: "red",
-          borderVisible: false,
-        });
-        seriesInstanceRef.current = candlestickSeries;
-        candlestickSeries.setData(formattedData);
-      }
+    if (chartContainerRef.current) {
+      const chart = createChart(chartContainerRef.current, {
+        rightPriceScale: { visible: true },
+        timeScale: { timeVisible: true, secondsVisible: true },
+      });
+      chartInstanceRef.current = chart;
+
+      const candlestickSeries = chart.addCandlestickSeries({
+        upColor: "green",
+        downColor: "red",
+        borderVisible: false,
+      });
+      seriesInstanceRef.current = candlestickSeries;
+      candlestickSeries.setData(formattedData);
 
       const addDataPoint = () => {
         const currentIndexCopy = currentIndex;
@@ -102,20 +119,26 @@ export const useMultipleInstruments = () => {
         currentIndex = (currentIndex + 1) % formattedData.length;
       };
 
-      const intervalId = setInterval(addDataPoint, 1000);
-
-      return () => {
-        clearInterval(intervalId);
-      };
+      intervalId = setInterval(addDataPoint, 1000);
     }
-  }, [formattedData, currentIndex]);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [formattedData]);
 
   return {
     chartContainerRef,
+    selectFirstStock,
+    setSelectFirstStock,
+    selectSecondStock,
+    setSelectSecondStock,
+    timeFrame,
+    setTimeFrame,
   };
 };
 
-type CandlestickFormatData = {
+export type CandlestickFormatData = {
   time: UTCTimestamp;
   open: number;
   high: number;
