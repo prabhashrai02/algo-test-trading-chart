@@ -7,7 +7,7 @@ import {
   UTCTimestamp,
 } from "lightweight-charts";
 
-import { ChartDataType, convertToOHLC } from "@/Common/convertToOhlc";
+import { ChartDataType, convertToOHLC } from "@/Common/Components/Utils/convertToOhlc";
 
 import importedData from "@/Assets/BANKNIFTY2360843500CE(2023-06-01).json";
 
@@ -24,7 +24,7 @@ export const useOhlcChart = () => {
     ]
   );
 
-  const ohlc1min = convertToOHLC(data, 15);
+  const ohlc1min = convertToOHLC(data, 1);
 
   const formattedData: CandlestickFormatData[] = ohlc1min.map((value) => ({
     time: (new Date(value.time).getTime() / 1000) as UTCTimestamp,
@@ -34,7 +34,8 @@ export const useOhlcChart = () => {
     close: value.close,
   }));
 
-  let prevData: CandlestickFormatData;
+  let prevData: CandlestickFormatData = formattedData.slice(-1)[0];
+
   let currentIndex = 0;
 
   useEffect(() => {
@@ -52,13 +53,15 @@ export const useOhlcChart = () => {
           borderVisible: false,
         });
         seriesInstanceRef.current = candlestickSeries;
+
+        candlestickSeries.setData(formattedData);
       }
 
-      const addDataPoint = () => {
+      const updatedData = () => {
         const currentIndexCopy = currentIndex;
         const dataPoint = formattedData[currentIndexCopy];
 
-        if (prevData && prevData.time > dataPoint.time)
+        if (prevData.time > dataPoint.time)
           dataPoint.time = (prevData.time + 1) as UTCTimestamp;
 
         seriesInstanceRef.current?.update(dataPoint);
@@ -67,7 +70,7 @@ export const useOhlcChart = () => {
         currentIndex = (currentIndex + 1) % formattedData.length;
       };
 
-      const intervalId = setInterval(addDataPoint, 1000);
+      const intervalId = setInterval(updatedData, 1000);
 
       return () => {
         clearInterval(intervalId);
