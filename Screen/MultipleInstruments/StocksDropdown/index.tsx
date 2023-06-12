@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 
-import styles from "./StocksDropdown.module.css";
+import styles from "./stocksDropdown.module.css";
 
 const StocksDropdown = (props: DropdownProps) => {
   const { label, options, selectedValues, onDropdownValueChange } = props;
