@@ -1,34 +1,30 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+# TradingView Charting Library Project
 
-First, run the development server:
+This project implements the TradingView Charting Library using the Lightweight Charts library. It provides functionality to display and analyze financial data in the form of charts. The project consists of multiple phases, each building upon the previous phase to enhance the charting capabilities.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+## Project Structure
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Library: TradingView Charting Library is used as the foundation for the project.
+Data1: Contains the financial data for instrument 1 in the format [Timestamp, LTP*1000, TotalVolume].
+Data2: Contains the financial data for instrument 2 in the format [Timestamp, LTP*1000, TotalVolume].
+Data3: Contains the financial data for instrument 3 in the format [Timestamp, LTP*1000, TotalVolume].
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Phase I: Static Chart
 
-## Learn More
+In this phase, a NextJS application is created, and the Lightweight Charts library is installed. The application renders the data from Data1 on a static chart, providing a visual representation of how the price changed during the day for instrument 1.
 
-To learn more about Next.js, take a look at the following resources:
+## Phase II: Live Price
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+To cater to users who want to see live data during market hours, this phase emulates the component to fetch data from a WebSocket. It ensures that the entire component doesn't rerender on every update, optimizing performance. The chart dynamically updates with live prices for instrument 1.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Phase III: OHLC
 
-## Deploy on Vercel
+Since displaying per-second data on the chart can be overwhelming, this phase converts the data into OHLC (Open High Low Close) format based on the specified resolution (e.g., 1min, 5min, 30min). The chart is then displayed in the OHLC format, providing a clearer view of the instrument's price movements. This phase also includes the features implemented in previous phases.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Phase IV: Multiple Instruments
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+To address user requirements for combining multiple instruments in a single chart, this phase introduces the ability to select and display data from multiple instruments simultaneously. A generalized function adds up prices at the same timestamp, considering the resolution of the chart. It returns a combined OHLC array for the selected instruments. Users can dynamically update the chart to visualize multiple instruments together. All features from previous phases are included in this phase.
+
+Please note that this README provides an overview of the project's phases and their objectives. For detailed implementation and usage instructions, please refer to the code.
