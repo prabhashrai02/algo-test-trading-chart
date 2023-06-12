@@ -1,8 +1,7 @@
 import { useMultipleInstruments } from "./useMultipleInstruments";
 
 import InputDropdown from "@/Common/Components/InputDropdown";
-
-import { STOCKS_LIST, TIME_FRAME } from "./constants";
+import { STOCKS_LIST, TIME_FRAME } from "@/Common/constants";
 
 import styles from "./multipleInstruments.module.css";
 
