@@ -9,7 +9,7 @@
   font-weight: 500;
   margin: 8px 0;
   display: block;
-  width: 100%;
+  overflow: hidden;
 }
 
 .dropdownToggle {
@@ -29,6 +29,12 @@
   margin-top: 2px;
   display: flex;
   flex-wrap: wrap;
+}
+
+.selectedValue {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .dropdownMenu {

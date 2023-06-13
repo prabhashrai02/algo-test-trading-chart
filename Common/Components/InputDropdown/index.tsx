@@ -35,7 +35,9 @@ const InputDropdown = (props: DropdownProps) => {
       <label> {label} </label>
 
       <div className={styles.dropdownToggle} onClick={() => setIsOpen(!isOpen)}>
-        {selectedValue ? selectedValue : "Select an option"}
+        <span className={styles.selectedValue}>
+          {selectedValue ? selectedValue : "Select an option"}
+        </span>
         {isOpen ? <span> &#9651; </span> : <span> &#9661; </span>}
       </div>
       {isOpen && (
