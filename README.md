@@ -28,3 +28,10 @@ Since displaying per-second data on the chart can be overwhelming, this phase co
 To address user requirements for combining multiple instruments in a single chart, this phase introduces the ability to select and display data from multiple instruments simultaneously. A generalized function adds up prices at the same timestamp, considering the resolution of the chart. It returns a combined OHLC array for the selected instruments. Users can dynamically update the chart to visualize multiple instruments together. All features from previous phases are included in this phase.
 
 Please note that this README provides an overview of the project's phases and their objectives. For detailed implementation and usage instructions, please refer to the code.
+
+# Screenshots
+
+![image](https://github.com/prabhashrai02/algo-test-trading-chart/assets/73634195/bcaf0670-4159-43fa-92fb-b652f6ecbdb6)
+
+![image](https://github.com/prabhashrai02/algo-test-trading-chart/assets/73634195/fde4f238-9261-4988-8857-e9ff25461cc7)
+
